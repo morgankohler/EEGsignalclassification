@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="WebServers">
+    <option name="servers">
+      <webServer id="08d0fbe2-9089-4b2f-9b39-6a76814e89c8" name="dc">
+        <fileTransfer accessType="SFTP" host="xfer.discovery.neu.edu" port="22" sshConfigId="ee35860a-cdfd-4a31-9472-63fe8f17116d" sshConfig="kohler.m@xfer.discovery.neu.edu:22 password">
+          <advancedOptions>
+            <advancedOptions dataProtectionLevel="Private" passiveMode="true" shareSSLContext="true" />
+          </advancedOptions>
+        </fileTransfer>
+      </webServer>
+    </option>
+  </component>
+</project>

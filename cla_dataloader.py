@@ -11,7 +11,7 @@ class CLADataset(data.Dataset):
     def __init__(self, train=True, split=0.8):
         super(CLADataset, self).__init__()
 
-        self.root = '/mnt/c/dev/eeg/data/CLA-3states/parsed/'
+        self.root = '/scratch/kohler.m/data/CLA-3states/parsed/'
         self.train = train
 
         labels = torch.tensor([])
