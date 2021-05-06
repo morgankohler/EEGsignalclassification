@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="PublishConfigData" remoteFilesAllowedToDisappearOnAutoupload="false">
+  <component name="PublishConfigData" autoUpload="Always" serverName="dc" remoteFilesAllowedToDisappearOnAutoupload="false" autoUploadExternalChanges="true">
     <serverData>
+      <paths name="dc">
+        <serverdata>
+          <mappings>
+            <mapping deploy="/scratch/kohler.m/EEGsignalclassification" local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="morgan@10.90.33.206:22">
         <serverdata>
           <mappings>
@@ -23,6 +30,13 @@
           </mappings>
         </serverdata>
       </paths>
+      <paths name="morgan@10.90.33.206:22 password (1)">
+        <serverdata>
+          <mappings>
+            <mapping local="$PROJECT_DIR$" web="/" />
+          </mappings>
+        </serverdata>
+      </paths>
       <paths name="morgan@10.90.33.207:22">
         <serverdata>
           <mappings>
@@ -38,5 +52,6 @@
         </serverdata>
       </paths>
     </serverData>
+    <option name="myAutoUpload" value="ALWAYS" />
   </component>
 </project>
