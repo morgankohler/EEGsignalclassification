@@ -8,18 +8,17 @@ torch.manual_seed(seed)
 torch.backends.cudnn.deterministic = True
 
 class CLADataset(data.Dataset):
-    def __init__(self, train=True, split=0.8):
+    def __init__(self, root, train=True, split=0.8):
         super(CLADataset, self).__init__()
 
-        self.root = '/scratch/kohler.m/data/CLA-3states/parsed/'
         self.train = train
 
         labels = torch.tensor([])
         data = torch.tensor([])
-        for data_file in os.listdir(self.root):
-            session_data = torch.load(os.path.join(self.root, data_file, 'data.pt'))
+        for data_file in os.listdir(root):
+            session_data = torch.load(os.path.join(root, data_file, 'data.pt'))
             data = torch.cat((data, session_data))
-            session_labels = torch.load(os.path.join(self.root, data_file, 'labels.pt'))
+            session_labels = torch.load(os.path.join(root, data_file, 'labels.pt'))
             labels = torch.cat((labels, session_labels))
 
         # 22nd channel only informs on the stimuli activation (not helpful information)

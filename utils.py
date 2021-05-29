@@ -30,7 +30,7 @@ def get_accuracy(model, data_iter, batch_size):
 
             y_hat = torch.argmax(y_hat,dim=1)
 
-            num_correct += torch.sum(torch.eq(y_hat, y.cuda())).item() #y.cuda()
+            num_correct += torch.sum(torch.eq(y_hat, y.cuda())).item() #y
 
             batch_iter += 1
 

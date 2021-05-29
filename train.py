@@ -8,7 +8,7 @@ import time
 import os
 
 from cla_dataloader import CLADataset
-from model import LSTM
+from model import EEGCLassifier
 from utils import get_accuracy
 
 
@@ -16,7 +16,7 @@ class Params:
     pass
 args = Params()
 
-train_number = 1
+train_number = 4
 
 args.out_folder = f'models/{train_number}'
 args.log_dir = f'logs/{train_number}'
@@ -25,8 +25,10 @@ try:
     os.mkdir(args.log_dir)
 except:
     pass
-args.from_checkpoint = False
-args.checkpoint = '/scratch/kohler.m/EEGsignalclassification/models/1/100.pth'
+args.from_checkpoint = True
+args.checkpoint = 'models/4/150.pth'
+
+args.data_root = '../data/CLA-3states/parsed/'
 
 args.save_every = 5
 
@@ -41,31 +43,33 @@ args.seq_length = 200
 args.input_dim = 21
 args.hidden_dim = 128
 args.output_dim = 3
-args.n_layers = 6
+args.n_layers = 12
 args.bidirectional = True
 args.dropout = 0.5
 
+print(vars(args))
+
 writer = SummaryWriter(log_dir=args.log_dir)
 
-train_set = CLADataset(train=True)
+train_set = CLADataset(root=args.data_root, train=True)
 train_queue = torch.utils.data.DataLoader(train_set, batch_size=args.batch_size)
 
-valid_set = CLADataset(train=False)
+valid_set = CLADataset(root=args.data_root, train=False)
 valid_queue = torch.utils.data.DataLoader(valid_set, batch_size=args.batch_size)
 
-model = LSTM(args.input_dim, args.hidden_dim, args.output_dim, args.n_layers, args.bidirectional, args.dropout, args.seq_length)
-
+model = EEGCLassifier(args.input_dim, args.hidden_dim, args.output_dim, args.n_layers, args.bidirectional, args.dropout, args.seq_length)
+model = model.cuda()
 optimizer = optim.Adamax(model.parameters(), args.learning_rate)
 scheduler = optim.lr_scheduler.CosineAnnealingLR(optimizer, args.epochs + 1, eta_min=args.learning_rate_min)
 
 start_epoch = 1
 if args.from_checkpoint:
-    checkpoint = torch.load(args.checkpoint, map_location='cpu')
-    model.load_state_dict(checkpoint['state_dict'], strict=False)
+    checkpoint = torch.load(args.checkpoint) #, map_location='cpu')
+    model.load_state_dict(checkpoint['state_dict'], strict=True)
     optimizer.load_state_dict(checkpoint['optimizer'])
     scheduler.load_state_dict(checkpoint['scheduler'])
     start_epoch = checkpoint['epoch'] + 1
-model = model.cuda()
+# model = model.cuda()
 
 ce_loss = nn.CrossEntropyLoss()
 
