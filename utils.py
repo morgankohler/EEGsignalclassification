@@ -25,12 +25,13 @@ def get_accuracy(model, data_iter, batch_size):
         num_correct = 0
         for x, y in data_iter:
             x = x.transpose(0,1).cuda()
+            # x = x.cuda()
 
             y_hat = model(x)
 
-            y_hat = torch.argmax(y_hat,dim=1)
+            y_hat = torch.argmax(y_hat, dim=1)
 
-            num_correct += torch.sum(torch.eq(y_hat, y.cuda())).item() #y
+            num_correct += torch.sum(torch.eq(y_hat, y.cuda())).item() #y.cuda()
 
             batch_iter += 1
 
