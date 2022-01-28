@@ -11,7 +11,7 @@ def extract_session_data(data, markers):
     extracted_session_data = torch.tensor([])
     extracted_session_labels = torch.tensor([])
 
-    for search_class_index in range(1,7):
+    for search_class_index in range(1, 7):
         class_islands = islandinfo(markers, trigger_val=search_class_index)
         class_data = torch.zeros(len(class_islands[0]), 200, 22)
 

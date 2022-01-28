@@ -9,6 +9,7 @@ torch.manual_seed(seed)
 torch.backends.cudnn.deterministic = True
 
 
+# occasionally useful wanting to test architectural change runs without errors
 class DummyLoader(data.Dataset):
     def __init__(self, root, train=True, split=0.8):
         super(DummyLoader, self).__init__()

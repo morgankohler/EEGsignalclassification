@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="SshConfigs">
-    <configs>
-      <sshConfig authType="PASSWORD" host="xfer.discovery.neu.edu" id="ee35860a-cdfd-4a31-9472-63fe8f17116d" port="22" nameFormat="DESCRIPTIVE" username="kohler.m" />
-    </configs>
-  </component>
-</project>

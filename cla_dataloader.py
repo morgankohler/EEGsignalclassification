@@ -3,42 +3,31 @@ from torch.utils import data
 import numpy as np
 import os
 
-seed = 1234
-torch.manual_seed(seed)
-torch.backends.cudnn.deterministic = True
-
 
 class CLADataset(data.Dataset):
     def __init__(self, root, train=True, split=0.8):
         super(CLADataset, self).__init__()
 
         if train:
-            subjects = ['SubjectB', 'SubjectC', 'SubjectD', 'SubjectE', 'SubjectF']
+            subjects = ['SubjectC', 'SubjectD', 'SubjectE', 'SubjectF']
         else:
-            subjects = ['SubjectA']
+            subjects = ['SubjectA', 'SubjectB']
 
         labels = torch.tensor([])
         data = torch.tensor([])
         for data_file in os.listdir(root):
 
-            for subject in subjects:
-                if subject not in data_file:
-                    continue
+            subject = data_file[data_file.find('Subject'):data_file.find('Subject')+8]
+            if subject not in subjects:
+                continue
 
             session_data = torch.load(os.path.join(root, data_file, 'data.pt'))
             data = torch.cat((data, session_data))
             session_labels = torch.load(os.path.join(root, data_file, 'labels.pt'))
             labels = torch.cat((labels, session_labels))
 
-        # 22nd channel only informs on the stimuli activation (not helpful information)
+        # 22nd channel only informs on the stimuli activation (not important for stimulus response classification)
         data = data[:, :, :21]
-
-        # if train:
-        #     data = data[:round(data.shape[0] * split)]
-        #     labels = labels[:round(labels.shape[0] * split)]
-        # else:
-        #     data = data[round(data.shape[0] * split):]
-        #     labels = labels[round(labels.shape[0] * split):]
 
         random_data_permutation = torch.randperm(data.shape[0])
         data = data[random_data_permutation]
@@ -55,3 +44,9 @@ class CLADataset(data.Dataset):
 
     def __len__(self):
         return self.data.shape[0]
+
+
+# d = CLADataset('/mnt/c/dev/eeg/data/CLA-3States/parsed', train=True)
+# l = len(d)
+# x = d[0]
+# _=0

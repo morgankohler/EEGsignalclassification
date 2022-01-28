@@ -126,9 +126,9 @@ class MultiHeadSelfAttention(nn.Module):
         return self.multi_head_weight(z_concat_heads)
 
 
-class ResidualLSTM(nn.Module):
+class ResAttnLSTM(nn.Module):
     def __init__(self, input_dim, hidden_dim, n_layers, bidirectional, dropout, num_heads, attn_dim):
-        super(ResidualLSTM, self).__init__()
+        super(ResAttnLSTM, self).__init__()
 
         self.n_layers = n_layers
 
@@ -161,6 +161,9 @@ class ResidualLSTM(nn.Module):
         self.do = nn.Dropout(dropout)
 
     def forward(self, x):
+        # transpose from (batch, seq_length, model_dim) to (seq_length, batch, model_dim) for lstm portion
+        x = x.transpose(0, 1)
+
         z, hidden, cell = (0, 0, 0)
         for idx in range(self.n_layers):
             z, (hidden, cell) = self.lstms[idx](x)
@@ -168,7 +171,7 @@ class ResidualLSTM(nn.Module):
                 x = self.residual_linear_projection(x)
             z = self.do(z) + x
 
-            # transpose from (seq_length, batch, model_dim) to (batch, seq_length, model_dim) for attn portion
+            # transpose from back to (batch, seq_length, model_dim) for attn portion
             z = z.transpose(0, 1)
 
             z = self.lns[idx*2](z)
@@ -186,19 +189,13 @@ class EEGCLassifier(nn.Module):
     def __init__(self, args):
         super(EEGCLassifier, self).__init__()
 
-        self.lstm = ResidualLSTM(args.input_dim,
-                                 args.hidden_dim,
-                                 args.n_layers,
-                                 args.bidirectional,
-                                 args.dropout,
-                                 args.num_heads,
-                                 args.attn_dim)
-
-        # self.lstm = nn.LSTM(input_dim,
-        #                     hidden_dim,
-        #                     num_layers=n_layers,
-        #                     bidirectional=bidirectional,
-        #                     dropout=dropout)
+        self.attn_lstm = ResAttnLSTM(args.input_dim,
+                                args.hidden_dim,
+                                args.n_layers,
+                                args.bidirectional,
+                                args.dropout,
+                                args.num_heads,
+                                args.attn_dim)
 
         self.fc = nn.Linear(args.hidden_dim * 2, args.output_dim)
 
@@ -206,8 +203,9 @@ class EEGCLassifier(nn.Module):
 
     def forward(self, x):
 
-        z = self.lstm(x)
+        z = self.attn_lstm(x)
 
+        # Not sure if I should add this dropout on the input before learning. Need further tests.
         # z = self.dropout(torch.cat((hidden[-2, :, :], hidden[-1, :, :]), dim=1))
         z = self.dropout(z)
 
